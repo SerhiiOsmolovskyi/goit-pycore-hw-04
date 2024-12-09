@@ -1,10 +1,10 @@
 import sys
 from pathlib import Path
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 init(autoreset=True)
 
-def visualize_directory(path: str):
+def visualize_directory(path: str, indent: int = 0):
     try:
         directory = Path(path)
         
@@ -16,11 +16,13 @@ def visualize_directory(path: str):
             print(f"{Fore.RED}Помилка: вказаний шлях не є директорією.")
             return
 
-        for item in directory.rglob("*"):
+        for item in sorted(directory.iterdir()):
+            prefix = " " * (indent * 4)
             if item.is_dir():
-                print(f"{Fore.BLUE}{item}")
+                print(f"{prefix}{Fore.BLUE}{item.name}/")
+                visualize_directory(item, indent + 1)
             elif item.is_file():
-                print(f"{Fore.GREEN}{item}")
+                print(f"{prefix}{Fore.GREEN}{item.name}")
 
     except Exception as e:
         print(f"{Fore.RED}Сталася помилка: {e}")
